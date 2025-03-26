@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Cricket Series App</title>
 
-  <!-- Bootstrap CSS -->
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Custom Styles -->
+  
   <style>
     .navbar-brand {
       font-weight: bold;
@@ -76,21 +76,21 @@
     </div>
   </nav>
 
-  <!-- Hero Section -->
+  
   <div class="container my-5 text-center">
     <h1>Welcome to Cricket Series App</h1>
     <p>Explore the latest cricket series and matches here.</p>
   </div>
 
-  <!-- Cricket Content Section -->
+  
   <div class="container my-5">
     <h2 class="text-center mb-4" id="contentTitle">Cricket Series</h2>
     <div class="row" id="content-container">
-      <!-- Content (series or matches) will be dynamically added here -->
+      
     </div>
   </div>
 
-  <!-- Footer -->
+ 
   <footer class="footer mt-auto">
     <div class="container text-center text-md-start">
       <div class="row">
@@ -120,22 +120,22 @@
     </div>
   </footer>
 
-  <!-- Bootstrap JS -->
+  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Series and Matches Script -->
+  
   <script>
-    // Function to handle showing cricket series
+   
     const showSeries = () => {
       const apiUrl = `https://api.cricapi.com/v1/series?apikey=6031ea62-03b8-4978-90d4-256d63c4b127&offset=0`;
       fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
           const seriesContainer = document.getElementById('content-container');
-          seriesContainer.innerHTML = ''; // Clear previous results
+          seriesContainer.innerHTML = ''; 
 
           if (data.data && data.data.length) {
-            // Loop over all series and display them
+            
             data.data.forEach(series => {
               const seriesCard = `
                 <div class="col-md-4 mb-4">
@@ -162,7 +162,7 @@
         });
     };
 
-    // Function to handle showing all matches
+    
     const showMatches = () => {
       const apiUrl = `https://api.cricapi.com/v1/matches?apikey=6031ea62-03b8-4978-90d4-256d63c4b127&offset=0`;
 
@@ -170,15 +170,15 @@
         .then(response => response.json())
         .then(data => {
           const matchesContainer = document.getElementById('content-container');
-          matchesContainer.innerHTML = ''; // Clear previous results
+          matchesContainer.innerHTML = ''; 
 
-          console.log(data); // Log the response to inspect it
+          console.log(data); 
 
-          // Ensure that the matches are present in the response
+          
           if (data.data && Array.isArray(data.data) && data.data.length > 0) {
-            // Loop over the matches array to generate the HTML for each match
+            
             data.data.forEach(match => {
-              // Ensure match object contains the required fields
+              
               const matchCard = `
                 <div class="col-md-4 mb-4" onclick="showMatchDetails('${match.id}')">
                   <div class="card h-100 shadow-sm">
@@ -194,10 +194,10 @@
                   </div>
                 </div>
               `;
-              matchesContainer.innerHTML += matchCard; // Add the generated card to the container
+              matchesContainer.innerHTML += matchCard; 
             });
           } else {
-            // If no matches or empty matches array
+            
             matchesContainer.innerHTML = '<p class="text-danger text-center">No matches found.</p>';
           }
         })
@@ -208,14 +208,14 @@
         });
     };
 
-    // Function to fetch and display series based on search input
+    
     const fetchSeries = (searchQuery) => {
       const apiUrl = `https://api.cricapi.com/v1/series?apikey=6031ea62-03b8-4978-90d4-256d63c4b127&offset=0&search=${searchQuery}`;
       fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
           const seriesContainer = document.getElementById('content-container');
-          seriesContainer.innerHTML = ''; // Clear previous results
+          seriesContainer.innerHTML = ''; 
           console.log(data.data);
           if (data.data && data.data.length) {
             data.data.forEach(series => {
@@ -244,25 +244,25 @@
         });
     };
 
-    // Function to handle search
+   
     const searchSeries = (event) => {
-      event.preventDefault(); // Prevent form submission
+      event.preventDefault(); 
 
-      const searchQuery = document.getElementById('searchInput').value; // Get the search input value
+      const searchQuery = document.getElementById('searchInput').value;
 
       if (searchQuery.trim() === "") {
         alert("Please enter a series name.");
         return;
       }
 
-      // Fetch series based on the search query
-      fetchSeries(searchQuery); // Call fetchSeries function with the search query
+      
+      fetchSeries(searchQuery);
     };
 
-    // Show cricket series by default
+    
     showSeries();
 
-    // Function to handle series and match buttons
+    
     document.getElementById("showSeriesBtn").addEventListener("click", (e) => {
       e.preventDefault();
       showSeries();
