@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cricket Series App</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom Styles -->
+  <style>
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+
+    .nav-link {
+      font-size: 1rem;
+    }
+
+    .btn-login {
+      font-weight: 500;
+    }
+
+    .footer {
+      background-color: #0d6efd;
+      color: white;
+      padding: 20px 0;
+    }
+
+    .footer a {
+      color: #d1e0ff;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .card-img-top {
+      height: 295px;
+      object-fit: cover;
+    }
+
+    .match-details {
+      padding: 20px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Cricket Series App</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#tvNavbar" aria-controls="tvNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="tvNavbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="#" id="showSeriesBtn">Series</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" id="showMatchesBtn">All Matches</a></li>
+        </ul>
+        <form class="d-flex" role="search" onsubmit="searchSeries(event)">
+          <input class="form-control me-2" type="search" id="searchInput" placeholder="Enter Series Name" aria-label="Search">
+          <input class="btn btn-light btn-login" type="submit" value="Search">
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="container my-5 text-center">
+    <h1>Welcome to Cricket Series App</h1>
+    <p>Explore the latest cricket series and matches here.</p>
+  </div>
+
+  <!-- Cricket Content Section -->
+  <div class="container my-5">
+    <h2 class="text-center mb-4" id="contentTitle">Cricket Series</h2>
+    <div class="row" id="content-container">
+      <!-- Content (series or matches) will be dynamically added here -->
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer mt-auto">
+    <div class="container text-center text-md-start">
+      <div class="row">
+        <div class="col-md-6 mb-3 mb-md-0">
+          <h5 class="text-white">Cricket Series App</h5>
+          <p>Your one-stop destination for all trending cricket series and matches.</p>
+        </div>
+        <div class="col-md-3 mb-3">
+          <h6>Quick Links</h6>
+          <ul class="list-unstyled">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Series</a></li>
+            <li><a href="#">Matches</a></li>
+            <li><a href="#">About</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 mb-3">
+          <h6>Contact</h6>
+          <ul class="list-unstyled">
+            <li>Email: support@cricketseriesapp.com</li>
+            <li>Phone: +1 234 567 8901</li>
+          </ul>
+        </div>
+      </div>
+      <hr class="my-3 border-light">
+      <p class="text-center mb-0">&copy; 2025 Cricket Series App. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Series and Matches Script -->
+  <script>
+    // Function to handle showing cricket series
+    const showSeries = () => {
+      const apiUrl = `https://api.cricapi.com/v1/series?apikey=6031ea62-03b8-4978-90d4-256d63c4b127&offset=0`;
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          const seriesContainer = document.getElementById('content-container');
+          seriesContainer.innerHTML = ''; // Clear previous results
+
+          if (data.data && data.data.length) {
+            // Loop over all series and display them
+            data.data.forEach(series => {
+              const seriesCard = `
+                <div class="col-md-4 mb-4">
+                  <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                      <h5 class="card-title">${series.name}</h5>
+                      <p class="card-text">${series.shortName} - ${series.startDate} to ${series.endDate}</p>
+                      <p class="card-text">Matches: ${series.matches}</p>
+                      <p class="card-text">Squads: ${series.squads}</p>
+                    </div>
+                  </div>
+                </div>
+              `;
+              seriesContainer.innerHTML += seriesCard;
+            });
+          } else {
+            seriesContainer.innerHTML = '<p class="text-danger text-center">No series found.</p>';
+          }
+        })
+        .catch(error => {
+          console.error("Failed to load series:", error);
+          const seriesContainer = document.getElementById('content-container');
+          seriesContainer.innerHTML = `<p class="text-danger text-center">Failed to load series data.</p>`;
+        });
+    };
+
+    // Function to handle showing all matches
+    const showMatches = () => {
+      const apiUrl = `https://api.cricapi.com/v1/matches?apikey=6031ea62-03b8-4978-90d4-256d63c4b127&offset=0`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          const matchesContainer = document.getElementById('content-container');
+          matchesContainer.innerHTML = ''; // Clear previous results
+
+          console.log(data); // Log the response to inspect it
+
+          // Ensure that the matches are present in the response
+          if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+            // Loop over the matches array to generate the HTML for each match
+            data.data.forEach(match => {
+              // Ensure match object contains the required fields
+              const matchCard = `
+                <div class="col-md-4 mb-4" onclick="showMatchDetails('${match.id}')">
+                  <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                      <h5 class="card-title">${match.name}</h5>
+                      <p class="card-text">Match Type: ${match.matchType}</p>
+                      <p class="card-text">Venue: ${match.venue}</p>
+                      <p class="card-text">Status: ${match.status}</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                      <strong>Match Start</strong>
+                    </div>
+                  </div>
+                </div>
+              `;
+              matchesContainer.innerHTML += matchCard; // Add the generated card to the container
+            });
+          } else {
+            // If no matches or empty matches array
+            matchesContainer.innerHTML = '<p class="text-danger text-center">No matches found.</p>';
+          }
+        })
+        .catch(error => {
+          console.error("Failed to load matches:", error);
+          const matchesContainer = document.getElementById('content-container');
+          matchesContainer.innerHTML = `<p class="text-danger text-center">Failed to load matches data.</p>`;
+        });
+    };
+
+    // Function to fetch and display series based on search input
+    const fetchSeries = (searchQuery) => {
+      const apiUrl = `https://api.cricapi.com/v1/series?apikey=6031ea62-03b8-4978-90d4-256d63c4b127&offset=0&search=${searchQuery}`;
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          const seriesContainer = document.getElementById('content-container');
+          seriesContainer.innerHTML = ''; // Clear previous results
+          console.log(data.data);
+          if (data.data && data.data.length) {
+            data.data.forEach(series => {
+              const seriesCard = `
+                <div class="col-md-4 mb-4">
+                  <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                      <h5 class="card-title">${series.name}</h5>
+                      <p class="card-text">${series.shortName} - ${series.startDate} to ${series.endDate}</p>
+                      <p class="card-text">Matches: ${series.matches}</p>
+                      <p class="card-text">Squads: ${series.squads}</p>
+                    </div>
+                  </div>
+                </div>
+              `;
+              seriesContainer.innerHTML += seriesCard;
+            });
+          } else {
+            seriesContainer.innerHTML = '<p class="text-danger text-center">No series found.</p>';
+          }
+        })
+        .catch(error => {
+          console.error("Failed to load series:", error);
+          const seriesContainer = document.getElementById('content-container');
+          seriesContainer.innerHTML = `<p class="text-danger text-center">Failed to load series data.</p>`;
+        });
+    };
+
+    // Function to handle search
+    const searchSeries = (event) => {
+      event.preventDefault(); // Prevent form submission
+
+      const searchQuery = document.getElementById('searchInput').value; // Get the search input value
+
+      if (searchQuery.trim() === "") {
+        alert("Please enter a series name.");
+        return;
+      }
+
+      // Fetch series based on the search query
+      fetchSeries(searchQuery); // Call fetchSeries function with the search query
+    };
+
+    // Show cricket series by default
+    showSeries();
+
+    // Function to handle series and match buttons
+    document.getElementById("showSeriesBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      showSeries();
+    });
+
+    document.getElementById("showMatchesBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      showMatches();
+    });
+  </script>
+</body>
+
+
+
+</html>
